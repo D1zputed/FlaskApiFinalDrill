@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, make_response, jsonify, request
 from flask_mysqldb import MySQL
 from markupsafe import escape
 
@@ -16,6 +16,14 @@ mysql = MySQL(app)
 def index():
     return 'Index Page'
 
-@app.route('/hello')
-def hello():
-    return 'Hello, World'
+@app.route('/banks', methods=["GET"])
+def get_banks():
+    cur = mysql.connection.cursor()
+    query="""
+    select * from banks
+    """
+    cur.execute(query)
+    data =cur.fetchall()
+    cur.close()
+    
+    return make_response(jsonify(data), 200)
