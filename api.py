@@ -84,9 +84,28 @@ def AddBank():
     cur.close()
     return make_response(
         jsonify(
-            {"message": "actor added successfully", "rows_affected": rows_affected}
+            {"message": "bank added successfully", "rows_affected": rows_affected}
         ),
         201,
+    )
+
+@app.route("/banks/<int:id>", methods=["PUT"])
+def UpdateBankDetails(id):
+    cur = mysql.connection.cursor()
+    info = request.get_json()
+    
+    banks_details = info["bank_details"]
+    query = f"""UPDATE banks SET bank_details = "{banks_details}" WHERE banks_id = {id}"""
+    
+    cur.execute(query)
+    
+    mysql.connection.commit()
+    rows_affected = cur.rowcount
+    cur.close()
+    return make_response(
+        jsonify(
+            {"message": "bank updated successfully", "rows_affected": rows_affected}
+        ),20,
     )
 
 if __name__ == "__main__":
