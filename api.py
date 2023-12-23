@@ -67,5 +67,27 @@ def GetCustomerBanks(id):
     
     return make_response(jsonify(data), 201)
 
+@app.route("/banks", methods=["POST"])
+def AddBank():
+    cur = mysql.connection.cursor()
+    info = request.get_json()
+    banks_id = info["banks_id"]
+    banks_details = info["banks_details"]
+    query = f"""INSERT INTO banks VALUES ({banks_id}, "{banks_details}")"""
+    cur.execute(query)
+    
+    mysql.connection.commit()
+    cur.close()
+    
+    print("row(s) affected :{}".format(cur.rowcount))
+    rows_affected = cur.rowcount
+    cur.close()
+    return make_response(
+        jsonify(
+            {"message": "actor added successfully", "rows_affected": rows_affected}
+        ),
+        201,
+    )
+
 if __name__ == "__main__":
     app.run(debug=True)
