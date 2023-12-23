@@ -12,19 +12,34 @@ app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 
 mysql = MySQL(app)
 
+def data_fetch(query):
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    data = cur.fetchall()
+    cur.close()
+    return data
+
 @app.route("/")
 def index():
     return 'Index Page'
 
 @app.route('/banks', methods=["GET"])
 def get_banks():
-    cur = mysql.connection.cursor()
     query="""
     select * from banks
     """
-    cur.execute(query)
-    data =cur.fetchall()
-    cur.close()
+    
+    data = data_fetch(query)
+    
+    return make_response(jsonify(data), 200)
+
+@app.route("/banks/<int:id>", methods=["GET"])
+def GetBankById(id):
+    query="""
+    SELECT * FROM banks WHERE banks_id = {}
+    """.format(id)
+    
+    data = data_fetch(query)
     
     return make_response(jsonify(data), 200)
 

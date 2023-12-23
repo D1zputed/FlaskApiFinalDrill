@@ -17,6 +17,12 @@ class MyAppTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("BDO" in response.data.decode())
         
+    def test_getactors_by_id(self):
+        response = self.app.get("/banks/0")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("BDO" in response.data.decode())
+
+
 if __name__ == "__main__":
     unittest.main()
 
