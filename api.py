@@ -108,5 +108,20 @@ def UpdateBankDetails(id):
         ),20,
     )
 
+@app.route("/transactions/<int:id>", methods=["DELETE"])
+def delete_transaction(id):
+    cur = mysql.connection.cursor()
+    query = f""" DELETE FROM transactions WHERE transaction_id = {id} """
+    cur.execute(query)
+    mysql.connection.commit()
+    rows_affected = cur.rowcount
+    cur.close()
+    return make_response(
+        jsonify(
+            {"message": "transaction deleted successfully", "rows_affected": rows_affected}
+        ),
+        200,
+    )
+
 if __name__ == "__main__":
     app.run(debug=True)
