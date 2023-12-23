@@ -56,12 +56,12 @@ def GetType():
 
 @app.route("/banks/<int:id>/customers", methods=["GET"])
 def GetCustomerBanks(id):
-    query="""
+    query=f"""
     Select customers.personal_details, customers.contact_details, banks.bank_details
     FROM branches inner join customers on customers.branch_id = branches.branch_id
     inner join banks on banks.banks_id = branches.bank_id 
-    WHERE banks.banks_id = {}
-    """.format(id)
+    WHERE banks.banks_id = {id}
+    """
     
     data = data_fetch(query)
     
@@ -122,6 +122,12 @@ def delete_transaction(id):
         ),
         200,
     )
+    
+@app.route("/banks/format", methods=["GET"])
+def get_params():
+    fmt = request.args.get('id')
+    foo = request.args.get('aaaa') 
+    return make_response(jsonify({"format":fmt, "foo":foo}),200)
 
 if __name__ == "__main__":
     app.run(debug=True)
