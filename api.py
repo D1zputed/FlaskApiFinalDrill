@@ -43,5 +43,29 @@ def GetBankById(id):
     
     return make_response(jsonify(data), 200)
 
+@app.route("/banks/type", methods=["GET"])
+def GetType():
+    query="""
+    SELECT * FROM accounts WHERE account_number IN 
+    (SELECT account_number FROM transactions where transaction_type_code = 0)
+    """
+    
+    data = data_fetch(query)
+    
+    return make_response(jsonify(data), 200)
+
+@app.route("/banks/<int:id>/customers", methods=["GET"])
+def GetCustomerBanks(id):
+    query="""
+    Select customers.personal_details, customers.contact_details, banks.bank_details
+    FROM branches inner join customers on customers.branch_id = branches.branch_id
+    inner join banks on banks.banks_id = branches.bank_id 
+    WHERE banks.banks_id = {}
+    """.format(id)
+    
+    data = data_fetch(query)
+    
+    return make_response(jsonify(data), 201)
+
 if __name__ == "__main__":
     app.run(debug=True)
